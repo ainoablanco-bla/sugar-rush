@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff5e5">
+    <meta name="description" content="Tiny Racers: un pequeño juego de karts en un mundo de caramelos. Proyecto DevChallenge3.">
+    <title>Tiny Racers · DevChallenge3</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/track.js" defer></script>
+    <script src="js/game.js" defer></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="page-header">
+        <a class="brand" href="./" aria-label="Tiny Racers, inicio">
+          <span class="pixel-flag" aria-hidden="true"></span>
+          tiny racers<span class="brand-dot">.</span>
+        </a>
+        <span class="project-label">DEVCHALLENGE3 <span>/</span> FASE 01</span>
+      </header>
+
+      <main>
+        <div class="intro">
+          <p class="eyebrow">KARTS PEQUEÑOS. AVENTURAS DULCES.</p>
+          <p class="intro-note">Tu primera vuelta empieza aquí.</p>
+        </div>
+
+        <section class="arcade" aria-label="Juego Tiny Racers">
+          <div class="arcade-bar">
+            <span><span class="status-dot" aria-hidden="true"></span> VALLE DE VAINILLA</span>
+            <span class="local-label">1 JUGADOR · LOCAL</span>
+          </div>
+
+          <div class="game-stage">
+            <canvas id="game" width="480" height="300" tabindex="0" aria-label="Circuito visto desde arriba. Usa W o flecha arriba para acelerar, S o abajo para frenar y retroceder, A y D o izquierda y derecha para girar." aria-describedby="controls">
+              Tu navegador necesita ser compatible con Canvas 2D para jugar a Tiny Racers.
+            </canvas>
+
+            <div id="start-screen" class="start-screen">
+              <div class="start-card">
+                <span class="edition">★ EL SABOR DE LA VELOCIDAD ★</span>
+                <h1><span>TINY</span><span>RACERS</span></h1>
+                <p>Una pista de galleta. Un kart. ¡Y tú!</p>
+                <button id="play-button" type="button">JUGAR <span aria-hidden="true">▶</span></button>
+                <span class="start-hint">WASD O FLECHAS PARA CONDUCIR</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="arcade-footer">
+            <span><span class="mini-kart" aria-hidden="true">▪</span> TU KART DE FRESA</span>
+            <span id="game-status" role="status">Todo listo para salir</span>
+          </div>
+        </section>
+
+        <div id="controls" class="instructions">
+          <section class="instruction">
+            <span class="instruction-number">01</span>
+            <div><h2>Al volante</h2><p><kbd>W</kbd> / <kbd>↑</kbd> acelera · <kbd>S</kbd> / <kbd>↓</kbd> frena y retrocede<br><kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd> giran el kart</p></div>
+          </section>
+          <section class="instruction">
+            <span class="instruction-number">02</span>
+            <div><h2>Sigue la galleta</h2><p>El glaseado es bonito, pero te frena.<br>Quédate en la pista y encuentra tu ritmo.</p></div>
+          </section>
+        </div>
+        <noscript><p class="no-script">Activa JavaScript en tu navegador para poder jugar.</p></noscript>
+      </main>
+
+      <footer class="page-footer"><span>HECHO CON PÍXELES Y UN POCO DE AZÚCAR</span><span>PROTOTIPO 0.1</span></footer>
+    </div>
+  </body>
+</html>

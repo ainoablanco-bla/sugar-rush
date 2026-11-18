@@ -1,0 +1,15 @@
+# Dependencias y salidas de futuras fases.
+node_modules/
+dist/
+coverage/
+
+# Configuración local y secretos.
+.env
+.env.*
+!.env.example
+
+# Archivos temporales del sistema y de las pruebas locales.
+.DS_Store
+Thumbs.db
+*.log
+.tmp/
