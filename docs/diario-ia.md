@@ -85,3 +85,33 @@ Se transcribe el encargo inicial para conservar el contexto del proyecto:
 ### Próxima fase
 
 Esperar a concretar el siguiente encargo con el alumno. Node.js, Express y Socket.IO quedan para más adelante.
+
+## Revisión de colisiones tras las pruebas manuales · 18 de noviembre de 2026
+
+### Resultados comunicados por el alumno
+
+Las pruebas manuales de la fase 1 confirmaron el funcionamiento de la pantalla inicial, el botón JUGAR, el circuito de caramelos, la visualización del kart y los controles de aceleración, frenado y giro. Se solicita corregir el cruce de los límites exteriores e interiores del circuito, manteniendo la posibilidad de girar y retroceder tras chocar.
+
+### Diagnóstico y cambios realizados
+
+- Se leyó el contenido de `js/track.js`, `js/game.js` y este diario antes de modificarlos. Los archivos ya estaban preparados en el índice de Git; se conservó ese estado sin añadir los nuevos cambios al índice.
+- Antes, `isRoad` únicamente activaba la ralentización en el césped. El único límite que detenía el kart era el rectángulo del canvas.
+- En `js/track.js` se añadió `canPlaceKart(x, y, halfSize)`. Comprueba una caja de 26 × 26 píxeles que cubre el cuerpo y las ruedas del kart en cualquier orientación. Su esquina más alejada debe estar dentro de la elipse exterior y su punto más próximo al centro debe estar fuera de la elipse interior. Así se comprueba el espacio del vehículo, no solo su centro; la caja fija deja margen para girar sin penetrar los bordes.
+- En `js/game.js` se calcula la siguiente posición antes de aplicarla. Si la caja cabe en la carretera, se acepta el movimiento; si cruza un límite, se conserva la última posición válida y se pone la velocidad a cero.
+- Se añadió el estado `touchingBoundary` para permitir girar estando detenido contra un borde. La marcha atrás sigue disponible con S/↓; cuando vuelve a avanzar por una posición válida, recupera el comportamiento habitual de giro.
+- Se sustituyeron la ralentización en césped y el límite del canvas por las colisiones con la carretera. Se mantienen el dibujo, las teclas y los demás ajustes de conducción. No se añadieron nuevas funcionalidades ni dependencias.
+
+### Verificación de esta revisión
+
+- `node --check` para ambos scripts: sin errores de sintaxis. `git diff --check`: sin errores de espacios.
+- Nueve grupos de comprobaciones con los scripts reales y DOM/Canvas simulado: espacio completo del kart; 64 choques repartidos entre los dos bordes; giro estando parado tras chocar y salida hacia delante; colisiones marcha atrás y recuperación; 12.000 pasos combinando aceleración, reversa y giro con el intervalo máximo de 0,05 s; equivalencia entre WASD y flechas; rozamiento y giro normal; colisión y recuperación a 30/60/120 FPS; muestreo independiente de puntos de las cajas aceptadas.
+- Todas las comprobaciones finales pasaron. La simulación no añade archivos ni dependencias al proyecto y no sustituye una partida real.
+- La verificación de esta corrección en navegador queda pendiente, tal como se solicita.
+
+### Pruebas pendientes en navegador
+
+- Chocar contra los límites exterior e interior, tanto de frente como en diagonal, a lo largo del circuito.
+- Mantener el acelerador contra un borde y confirmar que el kart no lo atraviesa ni queda visualmente fuera de la carretera.
+- Soltar el acelerador después del choque y girar con A/D o ←/→ sin que el kart se desplace.
+- Retroceder con S/↓ después de chocar y continuar conduciendo; comprobar también colisiones circulando marcha atrás.
+- Completar una vuelta usando WASD y otra con las flechas, revisando curvas y ausencia de bloqueos.

@@ -21,7 +21,7 @@
     friction: 45,
     maxSpeed: 115,
     maxReverse: 45,
-    grassSpeed: 43,
+    collisionHalfSize: 13,
     steering: 2.6,
   };
   const kart = { ...track.start, speed: 0 };
@@ -29,6 +29,7 @@
   const controlKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight"]);
   let playing = false;
   let previousTime = null;
+  let touchingBoundary = false;
 
   // El fondo no cambia: lo guardamos en un canvas auxiliar para no recalcularlo.
   const background = document.createElement("canvas");
@@ -78,7 +79,6 @@
     const backward = keys.has("KeyS") || keys.has("ArrowDown");
     const left = keys.has("KeyA") || keys.has("ArrowLeft");
     const right = keys.has("KeyD") || keys.has("ArrowRight");
-    const onRoad = track.isRoad(kart.x, kart.y);
 
     if (forward !== backward) {
       if (forward) {
@@ -92,24 +92,27 @@
     }
 
     kart.speed = Math.max(-physics.maxReverse, Math.min(physics.maxSpeed, kart.speed));
-    if (!onRoad && Math.abs(kart.speed) > physics.grassSpeed) {
-      kart.speed = Math.sign(kart.speed) * Math.max(physics.grassSpeed, Math.abs(kart.speed) - 220 * dt);
-    }
 
-    // No se gira en parado. Al retroceder se invierte el sentido del giro.
+    // Contra un borde se permite girar incluso parado para poder salir.
+    // Al retroceder se mantiene el sentido inverso del giro.
     const steering = Number(right) - Number(left);
-    const grip = Math.min(Math.abs(kart.speed) / 40, 1);
-    kart.angle += steering * physics.steering * grip * Math.sign(kart.speed) * dt;
-    kart.x += Math.cos(kart.angle) * kart.speed * dt;
-    kart.y += Math.sin(kart.angle) * kart.speed * dt;
+    const grip = touchingBoundary ? 1 : Math.min(Math.abs(kart.speed) / 40, 1);
+    const direction = Math.sign(kart.speed) || 1;
+    kart.angle += steering * physics.steering * grip * direction * dt;
 
-    // Mantener el kart entero dentro del escenario evita perderlo fuera de cámara.
-    const margin = 13;
-    const boundedX = Math.max(margin, Math.min(track.width - margin, kart.x));
-    const boundedY = Math.max(margin, Math.min(track.height - margin, kart.y));
-    if (boundedX !== kart.x || boundedY !== kart.y) kart.speed = 0;
-    kart.x = boundedX;
-    kart.y = boundedY;
+    if (kart.speed !== 0) {
+      const nextX = kart.x + Math.cos(kart.angle) * kart.speed * dt;
+      const nextY = kart.y + Math.sin(kart.angle) * kart.speed * dt;
+      if (track.canPlaceKart(nextX, nextY, physics.collisionHalfSize)) {
+        kart.x = nextX;
+        kart.y = nextY;
+        touchingBoundary = false;
+      } else {
+        // Rechazar solo el desplazamiento: la posición sigue siendo válida.
+        kart.speed = 0;
+        touchingBoundary = true;
+      }
+    }
   }
 
   function frame(time) {

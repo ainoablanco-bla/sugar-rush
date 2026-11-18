@@ -18,6 +18,25 @@ window.TinyRacersTrack = (() => {
     return ellipseValue(x, y, outer) <= 1 && ellipseValue(x, y, inner) >= 1;
   }
 
+  function canPlaceKart(x, y, halfSize) {
+    // Una caja cuadrada cubre el kart en cualquier giro, sin cambiar su dibujo.
+    const dx = Math.abs(x - center.x);
+    const dy = Math.abs(y - center.y);
+    // La esquina más alejada debe quedar dentro de la elipse exterior.
+    const farthest = ellipseValue(
+      center.x + dx + halfSize,
+      center.y + dy + halfSize,
+      outer,
+    );
+    // El punto de la caja más próximo al centro debe quedar fuera del jardín.
+    const nearest = ellipseValue(
+      center.x + Math.max(0, dx - halfSize),
+      center.y + Math.max(0, dy - halfSize),
+      inner,
+    );
+    return farthest <= 1 && nearest >= 1;
+  }
+
   function rect(ctx, color, x, y, w, h) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
@@ -112,5 +131,5 @@ window.TinyRacersTrack = (() => {
     });
   }
 
-  return { width, height, start, draw, isRoad };
+  return { width, height, start, draw, isRoad, canPlaceKart };
 })();
